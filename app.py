@@ -9,8 +9,8 @@ st.set_page_config(
     layout="wide"
 )
 # --- CONFIGURAÇÕES DO SUPABASE ---
-SUPABASE_URL = "https://qfhlhyqagrogvhhkpzns.supabase.co"
-SUPABASE_KEY = "sb_publishable_KczM4KqIBHHf-K4Chsgbyg_ojJnNW-J"
+SUPABASE_URL = st.secrets["SUPABASE_URL"]
+SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 # --- LISTA DE MESTRES ---
