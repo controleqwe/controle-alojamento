@@ -3,6 +3,11 @@ from supabase import create_client
 import pandas as pd
 from datetime import datetime
 
+st.set_page_config(
+    page_title="Controle de Relação",
+    page_icon="🏢",
+    layout="wide"
+)
 # --- CONFIGURAÇÕES DO SUPABASE ---
 SUPABASE_URL = "https://qfhlhyqagrogvhhkpzns.supabase.co"
 SUPABASE_KEY = "sb_publishable_KczM4KqIBHHf-K4Chsgbyg_ojJnNW-J"
