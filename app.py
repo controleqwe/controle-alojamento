@@ -17,7 +17,7 @@ SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 # --- 3. CONFIGURAÇÕES DE ACESSO ---
-MESTRES_AUTORIZADOS = ["controletg06009@gmail.com", "outro-mestre@aqui.com", "chefe@aqui.com"] 
+MESTRES_AUTORIZADOS = ["controletg06009@gmail.com", "edaplicativos21@gmail.com", "chefe@aqui.com"] 
 
 if 'usuario' not in st.session_state:
     st.session_state.usuario = None
