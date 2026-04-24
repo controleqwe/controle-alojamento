@@ -15,14 +15,14 @@ supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 MESTRES_AUTORIZADOS = ["controletg06009@gmail.com", "outro-mestre@aqui.com", "chefe@aqui.com"] 
 
-st.set_page_config(page_title="Relação dos Convidados", layout="wide")
+st.set_page_config(page_title="Relação dos Visitantes", layout="wide")
 
 if 'usuario' not in st.session_state:
     st.session_state.usuario = None
 
 
 if not st.session_state.usuario:
-    st.title("Relação dos Convidados")
+    st.title("Relação dos Visitantes")
     
     aba_login, aba_cadastro = st.tabs(["Login", "Criar Conta"])
 
@@ -80,9 +80,9 @@ else:
 
     
     with aba1:
-        st.header("Registrar Novo Convidado")
+        st.header("Registrar Novo Visitante")
         with st.form("form_entrada", clear_on_submit=True):
-            nome = st.text_input("Nome do Convidado")
+            nome = st.text_input("Nome do Visitante")
             cpf = st.text_input("CPF")
             if st.form_submit_button("Confirmar Entrada"):
                 if nome and cpf:
@@ -98,7 +98,7 @@ else:
 
     
     with aba2:
-        st.header("Pessoas no Alojamento")
+        st.header("Pessoa de Guarda")
         try:
             query = supabase.table("registros").select("*").is_("data_saida", "null").execute()
             df_presentes = pd.DataFrame(query.data)
@@ -114,7 +114,7 @@ else:
                             st.toast(f"Saída de {row['nome_convidado']} confirmada!")
                             st.rerun()
             else:
-                st.info("Não há convidados no alojamento no momento.")
+                st.info("Não há visitantes no alojamento no momento.")
         except Exception as e:
             st.error(f"Erro ao carregar dados: {e}")
 
