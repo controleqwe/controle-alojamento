@@ -69,7 +69,7 @@ else:
         st.session_state.usuario = None
         st.rerun()
 
-    st.title("Relação dos Convidados")
+    st.title("Relação dos Visitantes")
     
     
     if st.session_state.usuario in MESTRES_AUTORIZADOS:
