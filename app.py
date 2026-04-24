@@ -107,7 +107,7 @@ else:
         except Exception as e:
             st.error(f"Erro: {e}")
 
-    # --- ABA 3: RELATÓRIOS (CORREÇÃO DO EXCEL AQUI) ---
+    # --- ABA 3: RELATÓRIOS (CORREÇÃO DE ACENTOS E COLUNAS) ---
     if aba3:
         with aba3:
             st.header("Histórico de Movimentação")
@@ -121,16 +121,19 @@ else:
                     
                     st.dataframe(df_total, use_container_width=True)
                     
-                    # --- O TRUQUE PARA O EXCEL SEPARAR AS COLUNAS ---
-                    # 1. Geramos o CSV normal com ponto e vírgula
+                    # 1. Geramos o conteúdo do CSV com ponto e vírgula e encoding específico
+                    # O 'utf-8-sig' aqui já ajuda o pandas a preparar os caracteres
                     csv_puro = df_total.to_csv(index=False, sep=';', encoding='utf-8-sig')
                     
-                    # 2. Adicionamos "sep=;" na primeira linha (isso força o Excel a separar)
+                    # 2. Adicionamos a instrução "sep=;" para o Excel brasileiro abrir direto em colunas
                     csv_configurado = "sep=;\n" + csv_puro
+                    
+                    # 3. Convertemos para bytes usando 'utf-8-sig' de novo (o segredo final para acentos no Excel)
+                    csv_final_bytes = csv_configurado.encode('utf-8-sig')
                     
                     st.download_button(
                         label="📥 Baixar Relatório para Excel",
-                        data=csv_configurado.encode('utf-8-sig'),
+                        data=csv_final_bytes,
                         file_name=f'relatorio_{datetime.now().strftime("%d_%m_%Y")}.csv',
                         mime='text/csv',
                     )
