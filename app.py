@@ -98,7 +98,7 @@ else:
 
     
     with aba2:
-        st.header("Pessoa de Guarda")
+        st.header("Visitantes no Local")
         try:
             query = supabase.table("registros").select("*").is_("data_saida", "null").execute()
             df_presentes = pd.DataFrame(query.data)
@@ -114,7 +114,7 @@ else:
                             st.toast(f"Saída de {row['nome_convidado']} confirmada!")
                             st.rerun()
             else:
-                st.info("Não há visitantes no alojamento no momento.")
+                st.info("Não há visitantes no local no momento.")
         except Exception as e:
             st.error(f"Erro ao carregar dados: {e}")
 
