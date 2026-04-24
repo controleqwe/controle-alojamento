@@ -119,6 +119,7 @@ else:
             st.error(f"Erro ao carregar dados: {e}")
 
     
+            # --- ABA 3: RELATÓRIOS (SÓ APARECE SE FOR O MESTRE) ---
     if aba3:
         with aba3:
             st.header("Histórico de Movimentação")
@@ -127,13 +128,13 @@ else:
                 df_total = pd.DataFrame(todos.data)
 
                 if not df_total.empty:
-                    
+                    # 1. Deixar as datas bonitas para o Excel (tirar o T e o fuso horário)
                     df_total['data_entrada'] = pd.to_datetime(df_total['data_entrada']).dt.strftime('%d/%m/%Y %H:%M')
                     df_total['data_saida'] = pd.to_datetime(df_total['data_saida']).dt.strftime('%d/%m/%Y %H:%M')
                     
                     st.dataframe(df_total, use_container_width=True)
                     
-                    
+                    # 2. O SEGREDO: sep=';' para colunas e encoding='utf-8-sig' para acentos
                     csv = df_total.to_csv(index=False, sep=';', encoding='utf-8-sig').encode('utf-8-sig')
                     
                     st.download_button(
@@ -143,6 +144,6 @@ else:
                         mime='text/csv',
                     )
                 else:
-                    st.write("Nenhum dado encontrado no banco de dados.")
+                    st.write("Nenhum dado encontrado.")
             except Exception as e:
                 st.error(f"Erro ao carregar relatório: {e}")
