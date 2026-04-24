@@ -2,8 +2,9 @@ import streamlit as st
 from supabase import create_client
 import pandas as pd
 from datetime import datetime
+import io  # Necessário para gerar o arquivo Excel em memória
 
-# --- 1. CONFIGURAÇÃO DA PÁGINA (Apenas uma vez no topo!) ---
+# --- 1. CONFIGURAÇÃO DA PÁGINA ---
 st.set_page_config(
     page_title="Relação dos Visitantes",
     page_icon="🏢",
@@ -107,7 +108,7 @@ else:
         except Exception as e:
             st.error(f"Erro: {e}")
 
-    # --- ABA 3: RELATÓRIOS (CORREÇÃO DE ACENTOS E COLUNAS) ---
+    # --- ABA 3: RELATÓRIOS (VERSÃO EXCEL REAL .XLSX) ---
     if aba3:
         with aba3:
             st.header("Histórico de Movimentação")
@@ -116,28 +117,24 @@ else:
                 df_total = pd.DataFrame(todos.data)
 
                 if not df_total.empty:
+                    # Formatação das datas para exibição
                     df_total['data_entrada'] = pd.to_datetime(df_total['data_entrada']).dt.strftime('%d/%m/%Y %H:%M')
                     df_total['data_saida'] = pd.to_datetime(df_total['data_saida']).dt.strftime('%d/%m/%Y %H:%M')
                     
                     st.dataframe(df_total, use_container_width=True)
                     
-                    # 1. Geramos o conteúdo do CSV com ponto e vírgula e encoding específico
-                    # O 'utf-8-sig' aqui já ajuda o pandas a preparar os caracteres
-                    csv_puro = df_total.to_csv(index=False, sep=';', encoding='utf-8-sig')
-                    
-                    # 2. Adicionamos a instrução "sep=;" para o Excel brasileiro abrir direto em colunas
-                    csv_configurado = "sep=;\n" + csv_puro
-                    
-                    # 3. Convertemos para bytes usando 'utf-8-sig' de novo (o segredo final para acentos no Excel)
-                    csv_final_bytes = csv_configurado.encode('utf-8-sig')
+                    # --- LÓGICA DE EXPORTAÇÃO PARA EXCEL REAL (.XLSX) ---
+                    buffer = io.BytesIO()
+                    with pd.ExcelWriter(buffer, engine='openpyxl') as writer:
+                        df_total.to_excel(writer, index=False, sheet_name='Relatorio_Visitantes')
                     
                     st.download_button(
-                        label="📥 Baixar Relatório para Excel",
-                        data=csv_final_bytes,
-                        file_name=f'relatorio_{datetime.now().strftime("%d_%m_%Y")}.csv',
-                        mime='text/csv',
+                        label="📥 Baixar Relatório (Excel Oficial)",
+                        data=buffer.getvalue(),
+                        file_name=f'relatorio_{datetime.now().strftime("%d_%m_%Y")}.xlsx',
+                        mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
                     )
                 else:
                     st.write("Nenhum dado encontrado.")
             except Exception as e:
-                st.error(f"Erro: {e}")
+                st.error(f"Erro ao gerar relatório: {e}")
